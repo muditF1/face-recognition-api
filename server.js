@@ -20,13 +20,13 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.get('/', (req, res) => {
-    res.send(database.users);
+    res.send(db.users);
 })
 
 app.post('/signin', (req, res) => {
     db.select('email', 'hash').from('login')
         .where('email', '=', req.body.email)
-        .then(gata => {
+        .then(data => {
             const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
             if (isValid) {
                 return db.select('*').from('users')
@@ -67,10 +67,7 @@ app.post('/register', (req, res) => {
             .then(trx.commit)
             .catch(trx.rollback)
     })
-
-
         .catch(err => res.status(404).json('Unable to register'))
-
 })
 
 app.get('/profile/:id', (req, res) => {
